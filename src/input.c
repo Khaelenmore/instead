@@ -121,7 +121,7 @@ extern void gfx_finger_pos_scale(float x, float y, int *ox, int *oy, int norm);
 #define INPUT_REP_DELAY_MS 500
 #define INPUT_REP_INTERVAL_MS 30
 
-#define GAMEPAD_TICKS 10
+#define GAMEPAD_TICKS 20
 
 #if defined(IOS) || defined(ANDROID)
 int HandleAppEvents(void *userdata, SDL_Event *event)
@@ -182,7 +182,7 @@ static SDL_GameController *gamepad = NULL;
 static int deadzone = 8192;
 
 const float MOUSE_SHIFT_MIN = 1.0;
-const float MOUSE_SHIFT_MAX = 8.0;
+const float MOUSE_SHIFT_MAX = 10.0;
 
 static int gamepad_deadzone(SDL_GameController *g)
 {
@@ -275,8 +275,8 @@ static int gamepad_timer_fn(int interval, void *p)
 		memset(&event, 0, sizeof(event));
 		event.type = SDL_MOUSEMOTION;
 		gfx_cursor(&event.button.x, &event.button.y);
-		event.button.x += gamepad_mouse_shift(axis_x);
-		event.button.y += gamepad_mouse_shift(axis_y);
+		event.button.x += game_theme.scale * gamepad_mouse_shift(axis_x);
+		event.button.y += game_theme.scale * gamepad_mouse_shift(axis_y);
 		gfx_warp_cursor(event.button.x, event.button.y);
 		SDL_PushEvent(&event);
 	}
@@ -308,7 +308,7 @@ static int gamepad_mouse_event(SDL_Event *ev)
 		rc = 1;
 	} else if (ev->type == SDL_CONTROLLERAXISMOTION) {
 		if (gamepad_timer == NULL_TIMER)
-			gamepad_timer = gfx_add_timer(8, gamepad_timer_fn, NULL);
+			gamepad_timer = gfx_add_timer(GAMEPAD_TICKS, gamepad_timer_fn, NULL);
 	}
 	if (rc)
 		SDL_PushEvent(&event);
