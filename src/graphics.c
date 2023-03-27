@@ -1484,9 +1484,10 @@ int gfx_frame_anim(img_t img)
 		}
 
 	}
-	if (ag->loop != -1)
+	if (ag->loop != -1) {
 		anim_frame(ag);
-
+		ag->delay = timer_counter;
+	}
 	return 1;
 }
 
