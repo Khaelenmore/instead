@@ -98,6 +98,17 @@ Uint32 _colorkey(SDL_Surface *src)
 	return key;
 }
 
+int _greatestCommonDivisor(int n1, int n2) {
+    //Using Euclid's algorithm
+    int r = 1;
+    while (n2 > 0) {
+        r = n2;
+        n2 = n1 % n2;
+        n1 = r;
+    }
+
+    return r;
+}
 
 /*! 
 \brief Internal 32 bit integer-factor averaging Shrinker.
@@ -290,6 +301,14 @@ Assumes dst surface was allocated with the correct dimensions.
 int _zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int flipx, int flipy, int smooth)
 {
 	int x, y, sx, sy, ssx, ssy, *sax, *say, *csax, *csay, *salast, csx, csy, ex, ey, cx, cy, sstep, sstepx, sstepy;
+    /*
+    * Variables for applying scale factors
+    * dx, dy -- deltas to apply each fx, fy pixels
+    * mx, my -- Multiplier for source pixels (see below)
+    * fx, fy -- Multiplier for target pixels
+    * nxd, nyd -- next pixel to apply delta on
+    */
+    int dx = 0, dy = 0, mx = 1, my = 1, fx = 0, fy = 0, nxd = 0, nyd = 0;
 	tColorRGBA *c00, *c01, *c10, *c11;
 	tColorRGBA *sp, *csp, *dp;
 	int spixelgap, spixelw, spixelh, dgap, t1, t2;
@@ -313,10 +332,44 @@ int _zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int flipx, int flipy,
 	if (smooth) {
 		sx = (int) (65536.0 * (float) spixelw / (float) (dst->w - 1));
 		sy = (int) (65536.0 * (float) spixelh / (float) (dst->h - 1));
+
+        if (dst->w > src->w) {
+            mx = _greatestCommonDivisor(dst->w - 1, spixelw);
+            fx = (dst->w - 1) / mx;
+            mx = spixelw / mx;
+        }
+
+        if (dst->h > src->h) {
+            my = _greatestCommonDivisor(dst->h - 1, spixelh);
+            fy = (dst->h - 1) / my;
+            my = spixelh / my;
+        }
 	} else {
 		sx = (int) (65536.0 * (float) (src->w) / (float) (dst->w));
 		sy = (int) (65536.0 * (float) (src->h) / (float) (dst->h));
+
+        if (dst->w > src->w) {
+            mx = _greatestCommonDivisor(dst->w, src->w);
+            fx = dst->w / mx;
+            mx = src->w / mx;
+        }
+
+        if (dst->h > src->h) {
+            my = _greatestCommonDivisor(dst->h, src->h);
+            fy = dst->h / my;
+            my = src->h / my;
+        }
 	}
+
+    if (dst->w > src->w) {
+        nxd = fx;
+        dx = 65536 * mx - sx * fx;
+    }
+
+    if (dst->h > src->h) {
+        nyd = fy;
+        dy = 65536 * my - sy * fy;
+    }
 
 	/* Maximum scaled source size */
 	ssx = (src->w << 16) - 1;
@@ -329,6 +382,11 @@ int _zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int flipx, int flipy,
 		*csax = csx;
 		csax++;
 		csx += sx;
+
+        if (x + 1 == nxd) {
+            csx += dx;
+            nxd += fx;
+        }
 
 		/* Guard from overflows */
 		if (csx > ssx) { 
@@ -343,6 +401,11 @@ int _zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int flipx, int flipy,
 		*csay = csy;
 		csay++;
 		csy += sy;
+
+        if (y + 1 == nyd) {
+            csy += dy;
+            nyd += fy;
+        }
 
 		/* Guard from overflows */
 		if (csy > ssy) {
