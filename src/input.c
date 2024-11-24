@@ -495,8 +495,10 @@ int input(struct inp_event *inp, int wait)
 	if (!rc)
 		return 0;
 
+#if SDL_VERSION_ATLEAST(2,0,0)
 	if (gamepad_mouse_event(&event))
 		return AGAIN;
+#endif
 
 	inp->sym[0] = 0;
 	inp->type = 0;
