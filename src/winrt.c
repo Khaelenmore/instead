@@ -164,19 +164,6 @@ char *instead_local_stead_path(void)
 	return local_stead_path;
 }
 
-#if 0
-char *home_dir( void )
-{
-	static char homedir[PATH_MAX]="";
-	SHGetFolderPath( NULL, 
-		CSIDL_FLAG_CREATE | CSIDL_PROFILE,
-		NULL,
-		0, 
-		(LPTSTR)homedir );
-	unix_path(homedir);
-	return homedir;
-}
-#endif
 char *appdir( void )
 {
 	static char dir[PATH_MAX]="";
