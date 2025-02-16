@@ -251,14 +251,28 @@ char *appdir( void )
 	/* TODO: always define _LOCAL_APPDATA on UWP??? */
 	return NULL;
 #else
-	SHGetFolderPath( NULL, 
-		CSIDL_FLAG_CREATE | CSIDL_LOCAL_APPDATA,
-		NULL,
-		0, 
-		(LPTSTR)dir );
-	unix_path(dir);
-	strcat(dir, "/instead");
-	return dir;
+    FARPROC shell32_SHGetFolderPath = 0;
+    HMODULE shell32 = LoadLibrary(TEXT("shell32"));
+    if (shell32 != NULL) shell32_SHGetFolderPath = GetProcAddress(shell32, "SHGetFolderPath");
+
+    if (shell32_SHGetFolderPath) {
+        shell32_SHGetFolderPath(NULL,
+                                CSIDL_FLAG_CREATE | CSIDL_LOCAL_APPDATA,
+                                NULL,
+                                0,
+                                (LPTSTR) dir);
+        unix_path(dir);
+        strcat(dir, "/instead");
+
+        FreeLibrary(shell32);
+        return dir;
+    } else {
+        if (shell32 != NULL) FreeLibrary(shell32);
+        //Windows 9x; Store data in instead's directory
+        strcpy(dir, game_cwd);
+        strcat(dir, "/appdata");
+        return dir;
+    }
 #endif
 }
 
@@ -338,10 +352,8 @@ int debug_init(void)
 void debug_done()
 {
 #ifndef _UWP
-	if (game_running) {
-		fprintf(stderr, "Press enter to close the console.\n");
-		fgetc(stdin);
-	}
+    fprintf(stderr, "Press enter to close the console.\n");
+    fgetc(stdin);
 	FreeConsole();
 #endif
 }

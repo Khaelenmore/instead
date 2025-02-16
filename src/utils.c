@@ -337,8 +337,11 @@ char *w32_getdir(char *path, size_t size)
 	char *p = NULL;
 	path[0] = 0;
 	wp = _wgetcwd(NULL, 0);
-	if (!wp)
+	if (!wp) {
+        //Windows 9x
+        _getcwd(path, size);
 		return path;
+    }
 	p = wchar2utf(wp);
 	free(wp);
 	if (!p)
