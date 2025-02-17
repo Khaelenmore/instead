@@ -558,8 +558,7 @@ void game_clear(int x, int y, int w, int h)
 void game_clear_all(void)
 {
 	if (DIRECT_MODE)
-		gfx_img_fill(gfx_screen(NULL), 0, 0, game_theme.w, game_theme.h,
-			gfx_col(game_theme.brdcol.r, game_theme.brdcol.g, game_theme.brdcol.b));
+		gfx_img_fill(gfx_screen(NULL), 0, 0, game_theme.w, game_theme.h, game_theme.brdcol);
 	else
 		game_clear(0, 0, game_theme.w, game_theme.h);
 }
