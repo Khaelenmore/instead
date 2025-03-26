@@ -1437,9 +1437,15 @@ img_t	game_pict_scale(img_t img, int ww, int hh)
 		scale = 0;
 	if (game_theme.img_scale * game_theme.scale > 1.0f)
 		scale *= (game_theme.img_scale * game_theme.scale);
-	img2 = gfx_scale(img, scale, scale, SCALABLE_THEME_SMOOTH);
-	gfx_free_image(img);
-	return img2;
+
+    if (scale == 1.0f) {
+        return img;
+    } else {
+        img2 = gfx_scale(img, scale, scale, SCALABLE_THEME_SMOOTH);
+        gfx_free_image(img);
+        return img2;
+    }
+
 }
 
 int game_menu_box_wh(const char *txt, int *w, int *h)
@@ -1932,8 +1938,8 @@ int game_cmd(char *cmd, int flags)
 
 	if (menu_shown)
 		return -1;
-/*	if (dd) */
-		game_cursor(CURSOR_CLEAR);
+
+	game_cursor(CURSOR_CLEAR);
 
 	instead_lock();
 	if (flags & GAME_CMD_FILE) /* file command */
@@ -2698,30 +2704,29 @@ void game_cursor(int on)
 		cur = (use_xref) ? game_theme.use:game_theme.cursor;
 	if (!cur)
 		goto out;
-	do {
-		int ox = xc;
-		int oy = yc;
-		int ow = w;
-		int oh = h;
 
-		if (on != CURSOR_DRAW) {
-			gfx_cursor(&xc, &yc);
-			xc -= game_theme.cur_x;
-			yc -= game_theme.cur_y;
-		}
+    int ox = xc;
+    int oy = yc;
+    int ow = w;
+    int oh = h;
 
-		w = gfx_img_w(cur);
-		h = gfx_img_h(cur);
+    if (on != CURSOR_DRAW) {
+        gfx_cursor(&xc, &yc);
+        xc -= game_theme.cur_x;
+        yc -= game_theme.cur_y;
+    }
 
-		grab = gfx_grab_screen(xc, yc, w, h);
-		if (!nocursor_sw && mouse_focus() && (game_cursor_show || menu_shown))
-			gfx_draw(cur, xc, yc);
+    w = gfx_img_w(cur);
+    h = gfx_img_h(cur);
 
-		if (on != CURSOR_DRAW) {
-			_game_update(xc, yc, w, h);
-			_game_update(ox, oy, ow, oh);
-		}
-	} while (0);
+    grab = gfx_grab_screen(xc, yc, w, h);
+    if (!nocursor_sw && mouse_focus() && (game_cursor_show || menu_shown))
+        gfx_draw(cur, xc, yc);
+
+    if (on != CURSOR_DRAW) {
+        _game_update(xc, yc, w, h);
+        _game_update(ox, oy, ow, oh);
+    }
 out:
 	gfx_clip(xx, yy, ww, hh);
 	return;

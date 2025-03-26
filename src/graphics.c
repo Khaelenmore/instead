@@ -2590,6 +2590,10 @@ void gfx_video_done(void)
 
 img_t gfx_scale(img_t src, float xscale, float yscale, int smooth)
 {
+    if (xscale == 1.0 && yscale == 1.0) {
+        return gfx_dup(src);
+    }
+
 	anim_t ag;
 	if ((ag = is_anim(src))) {
 		int i;
