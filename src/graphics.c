@@ -5854,6 +5854,9 @@ int gfx_init(void)
 		gfx_done();
 		return -1;
 	}
+#if !SDL_VERSION_ATLEAST(1,3,0)
+    SDL_EnableUNICODE(1);
+#endif
 /*	SDL_DisableScreenSaver(); */
 	return 0;
 }

@@ -483,6 +483,11 @@ int input(struct inp_event *inp, int wait)
 	int rc;
 	SDL_Event event;
 	SDL_Event peek;
+#if !SDL_VERSION_ATLEAST(1, 3, 0)
+    SDL_UserEvent uevent;
+    memset(&uevent, 0, sizeof(uevent));
+    char *text;
+#endif
 	memset(&event, 0, sizeof(event));
 	memset(&peek, 0, sizeof(peek));
 
@@ -655,6 +660,13 @@ int input(struct inp_event *inp, int wait)
 		p(event.user.data2);
 		return AGAIN;
 		}
+    case SDL_USEREVENT + 1: {
+        strncpy(inp->sym, event.user.data1, sizeof(inp->sym));
+        inp->sym[sizeof(inp->sym) - 1] = 0;
+        inp->type = KEY_TEXT;
+        free(event.user.data1); // TODO This is not very performant; Could we use some pool of strings?
+        break;
+        }
 	case SDL_QUIT:
 		game_running = 0;
 		return -1;
@@ -692,7 +704,43 @@ int input(struct inp_event *inp, int wait)
 				return AGAIN;
 		}
 #endif
-		break;
+#if !SDL_VERSION_ATLEAST(1,3,0)
+        switch (event.key.keysym.sym) {
+            case SDLK_BACKSPACE:
+            case SDLK_TAB:
+            case SDLK_RETURN:
+            case SDLK_ESCAPE:
+            case SDLK_DELETE:
+            case SDLK_KP_ENTER:
+                break;
+            default:
+                text = malloc(sizeof(char) * 4);// TODO This is not very performant; Could we use some pool of strings?
+                if (event.key.keysym.unicode != 0) {
+                    if (event.key.keysym.unicode < 128) {
+                        text[0] = event.key.keysym.unicode;
+                        text[1] = 0;
+                    } else if (event.key.keysym.unicode < 4096) {
+                        text[0] = 0b11000000 + ((event.key.keysym.unicode >> 6 ) & 0b111111);
+                        text[1] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
+                        text[2] = 0;
+                    } else {
+                        text[0] = 0b11000000 + ((event.key.keysym.unicode >> 12 ) & 0b111111);
+                        text[1] = 0b11000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
+                        text[2] = 0b11000000 + ((event.key.keysym.unicode) & 0b111111);
+                        text[3] = 0;
+                    }
+                    memset(&peek, 0, sizeof(peek));
+                    uevent.type = SDL_USEREVENT + 1;
+                    uevent.code = 0;
+                    uevent.data1 = (void *)text;
+                    uevent.data2 = 0;
+                    peek.type = uevent.type;
+                    peek.user = uevent;
+                    SDL_PushEvent(&peek);
+                }
+        }
+# endif
+        break;
 	case SDL_KEYUP:
 		inp->type = KEY_UP;
 		inp->code = event.key.keysym.scancode;
