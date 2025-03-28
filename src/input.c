@@ -716,14 +716,18 @@ int input(struct inp_event *inp, int wait)
             default:
                 text = malloc(sizeof(char) * 4);// TODO This is not very performant; Could we use some pool of strings?
                 if (event.key.keysym.unicode != 0) {
+                    //Dirty but will do for now
                     if (event.key.keysym.unicode < 128) {
+                        //ASCII chars
                         text[0] = event.key.keysym.unicode;
                         text[1] = 0;
                     } else if (event.key.keysym.unicode < 4096) {
+                        //Fit in 2 UTF-8 bytes
                         text[0] = 0b11000000 + ((event.key.keysym.unicode >> 6 ) & 0b111111);
                         text[1] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
                         text[2] = 0;
                     } else {
+                        //Fit in 3 UTF-8 bytes; Largest for int16
                         text[0] = 0b11000000 + ((event.key.keysym.unicode >> 12 ) & 0b111111);
                         text[1] = 0b10000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
                         text[2] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
