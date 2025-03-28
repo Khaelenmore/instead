@@ -725,8 +725,8 @@ int input(struct inp_event *inp, int wait)
                         text[2] = 0;
                     } else {
                         text[0] = 0b11000000 + ((event.key.keysym.unicode >> 12 ) & 0b111111);
-                        text[1] = 0b11000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
-                        text[2] = 0b11000000 + ((event.key.keysym.unicode) & 0b111111);
+                        text[1] = 0b10000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
+                        text[2] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
                         text[3] = 0;
                     }
                     memset(&peek, 0, sizeof(peek));
