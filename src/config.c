@@ -107,6 +107,7 @@ static struct parser cfg_parser[] = {
 	{ "debug", parse_int, &opt_debug, 0 },
 	{ "resizable", parse_int, &opt_resizable, 0 },
 	{ "hires", parse_int, &opt_hires, 0 },
+	{ "nocursor", parse_int, &opt_nocursor, 0 },
 	{ NULL, NULL, NULL, 0 },
 };
 
@@ -148,12 +149,12 @@ int cfg_save(void)
 	fprintf(fp, "fs = %d\nhl = %d\nhz = %d\nvol = %d\nautosave = %d\n\
 game = %s\nfscale = %d\nmotion = %d\n\
 click = %d\nmusic = %d\ntheme = %s\n\
-filter = %d\nowntheme = %d\nlang = %s\nkbd = %d\nmode = %dx%d\njustify = %d\nfading = %d\nhires = %d\n",
+filter = %d\nowntheme = %d\nlang = %s\nkbd = %d\nmode = %dx%d\njustify = %d\nfading = %d\nhires = %d\nnocursor = %d\n",
 		opt_fs, opt_hl, opt_hz, opt_vol, save_autosave,
 		curgame_dir?curgame_dir:"", opt_fsize, opt_motion,
 		opt_click, opt_music, curtheme_dir[THEME_GLOBAL]?curtheme_dir[THEME_GLOBAL]:DEFAULT_THEME,
 		opt_filter, save_owntheme, opt_lang, opt_kbd, opt_mode[0], opt_mode[1],
-		opt_justify, opt_fading, opt_hires);
+		opt_justify, opt_fading, opt_hires, opt_nocursor);
 	if (opt_vsync != -1)
 		fprintf(fp, "vsync = %d\n", opt_vsync);
 	if (opt_debug != -1)
