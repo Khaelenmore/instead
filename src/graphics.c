@@ -2271,7 +2271,7 @@ retry:
 			SDL_VideoSurface->format->palette->ncolors);
 	}
 #endif
-	if (!nocursor_sw)
+	if (!opt_nocursor)
 		SDL_ShowCursor(SDL_DISABLE);
 
 	gfx_fs = fs;
@@ -2315,7 +2315,7 @@ int gfx_set_mode(int w, int h, int fs)
 	gfx_fs = fs;
 	gfx_width = w;
 	gfx_height = h;
-	if (!nocursor_sw)
+	if (!opt_nocursor)
 		SDL_ShowCursor(SDL_DISABLE);
 #ifdef ANDROID
 	scr = SDL_SetVideoMode(gfx_width, gfx_height, 0, hw | ( ( fs ) ? SDL_FULLSCREEN : 0 ) );
@@ -2452,7 +2452,7 @@ static void gfx_render_cursor(void)
 #ifdef _USE_SWROTATE
 	SDL_Point r;
 #endif
-	if (!cursor_on || !mouse_focus() || nocursor_sw)
+	if (!cursor_on || !mouse_focus() || opt_nocursor)
 		return;
 
 	gfx_cursor(&cursor_x, &cursor_y);
@@ -5950,4 +5950,12 @@ float gfx_get_dpi(void)
 		hdpi = 96.0f;
 #endif
 	return hdpi;
+}
+
+void gfx_update_cursor_state() {
+    game_cursor(opt_nocursor ? CURSOR_CLEAR : CURSOR_DRAW);
+    if (opt_nocursor)
+        SDL_ShowCursor(SDL_ENABLE);
+    else
+        SDL_ShowCursor(SDL_DISABLE);
 }

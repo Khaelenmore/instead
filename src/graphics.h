@@ -128,6 +128,7 @@ extern void	gfx_set_alpha(img_t src, int alpha);
 extern int	gfx_unset_alpha(img_t src);
 extern void	gfx_set_colorkey(img_t src, color_t col);
 extern void	gfx_unset_colorkey(img_t src);
+extern void gfx_update_cursor_state();
 
 extern img_t	gfx_alpha_img(img_t src, int alpha);
 extern img_t	gfx_display_alpha(img_t src);

@@ -44,7 +44,7 @@ int mouse_focus(void)
 
 int mouse_cursor(int on)
 {
-	if (nocursor_sw)
+	if (opt_nocursor)
 		return 0;
 	if (on)
 		SDL_ShowCursor(SDL_ENABLE);

@@ -43,6 +43,7 @@ extern int chunksize_sw;
 extern int opt_fading;
 extern int opt_fsize;
 extern int opt_fs;
+extern int opt_nocursor;
 extern int opt_owntheme;
 extern int opt_hl;
 extern int opt_hz;

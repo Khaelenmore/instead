@@ -736,6 +736,8 @@ int instead_main(int argc, char *argv[])
 		opt_autosave = 2;
 	if (window_sw)
 		opt_fs = 0;
+	if (nocursor_sw)
+    	opt_nocursor = 1;
 	if (fullscreen_sw)
 		opt_fs = 1;
 

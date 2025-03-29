@@ -502,7 +502,7 @@ char *game_menu_gen(void)
 		switch (menu_settings_num) {
 		case 0:
 			snprintf(menu_buff, sizeof(menu_buff), SETTINGS_GFX_MENU, 
-			opt_get_mode(), opt_fs?ON:OFF, opt_hires?ON:OFF, fsize, just[opt_justify],
+			opt_get_mode(), opt_fs?ON:OFF, opt_hires?ON:OFF, opt_nocursor?ON:OFF, fsize, just[opt_justify],
 				opt_hl?ON:OFF, opt_fading?ON:OFF, opt_owntheme?ON:OFF);
 			if (standalone_sw)
 				menu_strip_tag("<?:owntheme>", "</?>");
@@ -617,12 +617,16 @@ int game_menu_act(const char *a)
 			opt_fsize ++;
 		game_menu_box(1, game_menu_gen());
 	} else if (!strcmp(a, "/fs++")) {
-		opt_fsize ++;
-		if (opt_fsize <= FONT_MAX_SZ) {
-			restart_needed = 1;
-		} else
-			opt_fsize --;
-		game_menu_box(1, game_menu_gen());
+        opt_fsize++;
+        if (opt_fsize <= FONT_MAX_SZ) {
+            restart_needed = 1;
+        } else
+            opt_fsize--;
+        game_menu_box(1, game_menu_gen());
+    } else if (!strcmp(a, "/nocursor")) {
+        opt_nocursor ^= 1;
+        gfx_update_cursor_state();
+        game_menu_box(1, game_menu_gen());
 	} else if (!strcmp(a, "/hl")) {
 		opt_hl ^= 1;
 		game_menu_box(1, game_menu_gen());

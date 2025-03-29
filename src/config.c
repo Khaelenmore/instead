@@ -31,15 +31,18 @@ int opt_fsize = 5;
 int opt_fsize = 0;
 #endif
 
-#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT)
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT) || defined(DEFAULT_FULLSCREEN)
 int opt_fs = 1;
-int opt_owntheme = 1;
-int opt_hl = 0;
 #else
 int opt_fs = 0;
-int opt_owntheme = 1;
+#endif
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT)
+int opt_hl = 0;
+#else
 int opt_hl = 1;
 #endif
+int opt_owntheme = 1;
+int opt_nocursor = 0;
 int opt_fading = 1;
 int opt_hz = 44100;
 int opt_vol = 127;
@@ -53,7 +56,11 @@ int opt_justify = 0;
 int opt_vsync = -1;
 int opt_debug = -1;
 int opt_resizable = -1;
-int opt_hires = 1;
+#if defined(DEFAULT_LORES)
+    int opt_hires = 0;
+#else
+    int opt_hires = 1;
+#endif
 
 char *opt_game = NULL;
 char *opt_theme = NULL;
