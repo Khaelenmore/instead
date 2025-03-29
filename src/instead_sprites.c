@@ -957,7 +957,8 @@ void instead_ready(void)
 static int luaB_stead_busy(lua_State *L) {
 	int busy = lua_toboolean(L, 1);
 	if (busy) {
-		struct inp_event ev;
+		struct inp_event ev[MAX_EVENTS];
+        int count, i;
 		int dirty = 0;
 		memset(&ev, 0, sizeof(ev));
 
@@ -967,11 +968,13 @@ static int luaB_stead_busy(lua_State *L) {
 			game_flip();
 		}
 
-		while (input(&ev, 0) == AGAIN);
-		if (ev.type == MOUSE_MOTION) {
-			game_cursor(CURSOR_ON); /* to make all happy */
-			dirty = 1;
-		}
+		while (input(ev, 0, &count) == AGAIN);
+        for (i = 0; i < count; i++) {
+            if (ev[i].type == MOUSE_MOTION) {
+                game_cursor(CURSOR_ON); /* to make all happy */
+                dirty = 1;
+            }
+        }
 		if (!busy_time)
 			busy_time = gfx_ticks();
 		if (gfx_ticks() - busy_time >= 750 && menu_visible() != menu_wait) {

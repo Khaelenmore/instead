@@ -42,6 +42,8 @@
 #define EV_CODE_TEXT -3
 #define EV_CODE_WHEEL -4
 
+#define MAX_EVENTS 2
+
 #define AGAIN 2
 struct inp_event {
 	int 	type;
@@ -52,7 +54,7 @@ struct inp_event {
 	int 	count;
 };
 
-int input(struct inp_event *ev, int wait);
+int input(struct inp_event *ev, int wait, int *count);
 int input_init(void);
 void input_done(void);
 void input_clear(void);

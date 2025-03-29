@@ -478,16 +478,12 @@ int finger_pos(const char *finger, int *x, int *y, float *pressure)
 #endif
 }
 
-int input(struct inp_event *inp, int wait)
+int input(struct inp_event *inp, int wait, int *count)
 {
+    int i;
 	int rc;
 	SDL_Event event;
 	SDL_Event peek;
-#if !SDL_VERSION_ATLEAST(1, 3, 0)
-    SDL_UserEvent uevent;
-    memset(&uevent, 0, sizeof(uevent));
-    char *text;
-#endif
 	memset(&event, 0, sizeof(event));
 	memset(&peek, 0, sizeof(peek));
 
@@ -505,9 +501,13 @@ int input(struct inp_event *inp, int wait)
 		return AGAIN;
 #endif
 
-	inp->sym[0] = 0;
-	inp->type = 0;
-	inp->count = 1;
+    for (i = 0; i < MAX_EVENTS; i++) {
+	    inp[i].sym[0] = 0;
+	    inp[i].type = 0;
+	    inp[i].count = 1;
+    }
+    *count = 1; /*default*/
+
 	switch(event.type){
 #if SDL_VERSION_ATLEAST(2,0,0)
 	case SDL_TEXTINPUT:
@@ -660,13 +660,6 @@ int input(struct inp_event *inp, int wait)
 		p(event.user.data2);
 		return AGAIN;
 		}
-    case SDL_USEREVENT + 1: {
-        strncpy(inp->sym, event.user.data1, sizeof(inp->sym));
-        inp->sym[sizeof(inp->sym) - 1] = 0;
-        inp->type = KEY_TEXT;
-        free(event.user.data1); // TODO This is not very performant; Could we use some pool of strings?
-        break;
-        }
 	case SDL_QUIT:
 		game_running = 0;
 		return -1;
@@ -714,33 +707,28 @@ int input(struct inp_event *inp, int wait)
             case SDLK_KP_ENTER:
                 break;
             default:
-                text = malloc(sizeof(char) * 4);// TODO This is not very performant; Could we use some pool of strings?
                 if (event.key.keysym.unicode != 0) {
+                    inp[*count].type = KEY_TEXT;
+
                     //Dirty but will do for now
                     if (event.key.keysym.unicode < 128) {
                         //ASCII chars
-                        text[0] = event.key.keysym.unicode;
-                        text[1] = 0;
+                        inp[*count].sym[0] = event.key.keysym.unicode;
+                        inp[*count].sym[1] = 0;
                     } else if (event.key.keysym.unicode < 4096) {
                         //Fit in 2 UTF-8 bytes
-                        text[0] = 0b11000000 + ((event.key.keysym.unicode >> 6 ) & 0b111111);
-                        text[1] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
-                        text[2] = 0;
+                        inp[*count].sym[0] = 0b11000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
+                        inp[*count].sym[1] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
+                        inp[*count].sym[2] = 0;
                     } else {
                         //Fit in 3 UTF-8 bytes; Largest for int16
-                        text[0] = 0b11000000 + ((event.key.keysym.unicode >> 12 ) & 0b111111);
-                        text[1] = 0b10000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
-                        text[2] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
-                        text[3] = 0;
+                        inp[*count].sym[0] = 0b11000000 + ((event.key.keysym.unicode >> 12) & 0b111111);
+                        inp[*count].sym[1] = 0b10000000 + ((event.key.keysym.unicode >> 6) & 0b111111);
+                        inp[*count].sym[2] = 0b10000000 + ((event.key.keysym.unicode) & 0b111111);
+                        inp[*count].sym[3] = 0;
                     }
-                    memset(&peek, 0, sizeof(peek));
-                    uevent.type = SDL_USEREVENT + 1;
-                    uevent.code = 0;
-                    uevent.data1 = (void *)text;
-                    uevent.data2 = 0;
-                    peek.type = uevent.type;
-                    peek.user = uevent;
-                    SDL_PushEvent(&peek);
+
+                    (*count)++;
                 }
         }
 # endif

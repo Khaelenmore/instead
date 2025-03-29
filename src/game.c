@@ -3589,12 +3589,12 @@ static int mouse_instead(struct inp_event *ev, int *x, int *y)
 
 static __inline int game_cycle(void)
 {
-	static int x = 0, y = 0, rc;
-	struct inp_event ev;
-	ev.x = -1;
+	static int x = 0, y = 0, rc, i, count;
+	struct inp_event ev[MAX_EVENTS];
+    for (i = 0; i < MAX_EVENTS; i++)
+	    ev[i].x = -1; //I don't know why this is needed, but let's do it safely for now
 
-	/* game_cursor(CURSOR_CLEAR); */ /* release bg */
-	if (((rc = input(&ev, 1)) == AGAIN) && !need_restart) {
+	if (((rc = input(ev, 1, &count)) == AGAIN) && !need_restart) {
 		game_gfx_commit(1);
 		return rc;
 	}
@@ -3604,18 +3604,21 @@ static __inline int game_cycle(void)
 
 	if (rc == -1) {/* close */
 		goto out;
-	} else if (game_input_events(&ev)) { /* kbd, mouse and touch -> pass in game */
-		; /* all is done in game_input */
-	} else if (kbd_modifiers(&ev)) { /* ctrl, alt, shift */
-		; /* got modifiers */
-	} else if ((rc = kbd_instead(&ev, &x, &y))) { /* ui keys */
-		if (rc < 0)
-			goto out;
-	} else if (DIRECT_MODE && !menu_shown) {
-		; /* nothing todo */
-	} else if ((rc = mouse_instead(&ev, &x, &y)) < 0) { /* ui mouse */
-		goto out;
 	}
+
+    for (i = 0; i < count; i++) {
+        if (game_input_events(&ev[i])) { /* kbd, mouse and touch -> pass in game */
+            ; /* all is done in game_input */
+        } else if (kbd_modifiers(&ev[i])) { /* ctrl, alt, shift */
+            ; /* got modifiers */
+        } else if ((rc = kbd_instead(&ev[i], &x, &y))) { /* ui keys */
+            if (rc < 0)
+                goto out;
+        } else if (DIRECT_MODE && !menu_shown) { ; /* nothing todo */
+        } else if ((rc = mouse_instead(&ev[i], &x, &y)) < 0) { /* ui mouse */
+            goto out;
+        }
+    }
 
 	if (gfx_fading()) /* just fading */
 		return 0;

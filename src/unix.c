@@ -186,13 +186,14 @@ char *open_file_dialog(void)
 	gtk_response = -1; /* dirty, but we need both SDL and gtk */
 
 	while (gtk_response == -1) {
-		struct inp_event ev;
+		struct inp_event ev[MAX_EVENTS];
+        int count;
 		memset(&ev, 0, sizeof(struct inp_event));
 		while (g_main_context_pending(NULL)) {
 			g_main_context_iteration(NULL, FALSE);
-			while ((input(&ev, 0)) == AGAIN);
+			while ((input(ev, 0, &count)) == AGAIN);
 		} 
-		while ((input(&ev, 0)) == AGAIN);
+		while ((input(ev, 0, 0)) == AGAIN);
 		usleep(HZ*100);
 	}
 	if (gtk_response == GTK_RESPONSE_ACCEPT) {
