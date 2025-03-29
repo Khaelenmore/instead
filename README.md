@@ -11,7 +11,7 @@ Check the [INSTALL](INSTALL) file for install instructions.
 - SDL1 support is reinstated
 - API calls not accessible on older Windows are either removed or made optional
 - Added extra settings that could improve performance at the cost of visual quality
-  - Software rendering option moved to settings
+  - Hardware cursor option moved to settings
   - Font hinting mode moved to settings
 
 Currently supported targets:
