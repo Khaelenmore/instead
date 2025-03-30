@@ -6,6 +6,8 @@ Check the [COPYING](COPYING) file for license.
 
 Check the [INSTALL](INSTALL) file for install instructions.
 
+Download: https://files.silverwing.one/instead-9x/instead-sdl1-i486.zip
+
 ## Changes to [mainline INSTEAD](https://github.com/instead-hub/instead)
 
 - SDL1 support is reinstated
@@ -18,9 +20,10 @@ Currently supported targets:
 - Windows 95-XP, i486-compatible CPU
 
 Known limitations:
-- Some hardware may not be able to run more complex games. If the game runs too slow, you can try disabling fading, music, or using lower resolution.
-  - Reasonable performance achievable on Pentium 3 or faster CPU
-- Only software rendering is available
+- Some hardware may not be able to run more complex games. If the game runs too slow, you can try disabling fading, music, or using lower resolution;
+  - Reasonable performance achievable on Pentium 3 or faster CPU;
+  - Alpha-transparency is particularly slow, since it's done on the CPU; Games extensively using that will be slow;
+- Only software rendering is available.
 
 ## Web resources
 
