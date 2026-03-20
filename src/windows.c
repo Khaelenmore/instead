@@ -350,7 +350,9 @@ void debug_done()
 #ifdef _USE_BROWSE
 char *open_file_dialog(void)
 {
-	OPENFILENAME ofn;
+    // Have to use NT4 compatibility struct for the operation to work on Windows 9x
+    // TODO: A better approach would be to detect running version in runtime and choose appropriate struct
+	OPENFILENAME_NT4 ofn;
 	static char szFile[MAX_PATH];
 	static char szOldDir[MAX_PATH];
 	static int old_dir_set = 0;
@@ -369,7 +371,7 @@ char *open_file_dialog(void)
 	else
 		ofn.lpstrInitialDir = szOldDir;
 	ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_HIDEREADONLY|OFN_READONLY;
-	if (!GetOpenFileName(&ofn))
+	if (!GetOpenFileName((LPOPENFILENAMEA) &ofn))
 		return NULL;
 	old_dir_set = 1;
 	strcpy(szOldDir, ofn.lpstrFile);
