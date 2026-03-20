@@ -17,7 +17,6 @@ INSTEAD-кросс-платформенное приложение, которо
 - STEAD_PATH - путь по умолчанию к файлам .lua (каталог stead/);
 - ANDROID - сборка для Android;
 - \_WIN32 - сборка для Windows;
-- WINRT - сборка для Windows RT;
 - SAILFISHOS - сборка для Sailfish OS;
 - \_\_APPLE\_\_ - сборка для macOS;
 - IOS - сборка для iOS;

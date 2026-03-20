@@ -25,18 +25,18 @@
 #include "externals.h"
 #include "internals.h"
 
-#if defined(IOS) || defined(SAILFISHOS) || defined(ANDROID) || defined(WINRT)
+#if defined(IOS) || defined(SAILFISHOS) || defined(ANDROID)
 int opt_fsize = 5;
 #else
 int opt_fsize = 0;
 #endif
 
-#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT) || defined(DEFAULT_FULLSCREEN)
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(DEFAULT_FULLSCREEN)
 int opt_fs = 1;
 #else
 int opt_fs = 0;
 #endif
-#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT)
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS)
 int opt_hl = 0;
 #else
 int opt_hl = 1;

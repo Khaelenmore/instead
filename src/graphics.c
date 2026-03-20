@@ -2127,7 +2127,7 @@ int gfx_set_mode(int w, int h, int fs)
 	strcat(title, VERSION );
 	win_w = w * scale_sw; win_h = h * scale_sw;
 	gfx_get_max_mode(&max_mode_w, &max_mode_h, MODE_ANY); /* get current window size */
-#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT)
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS)
 	fs = 1; /* always fs for mobiles */
 #endif
 	if (fs && !software_sw) {
@@ -2192,7 +2192,7 @@ int gfx_set_mode(int w, int h, int fs)
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, (glhack_sw / 10) % 10);
 		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, glhack_sw % 10);
 	}
-#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS) || defined(WINRT)
+#if defined(IOS) || defined(ANDROID) || defined(SAILFISHOS)
 	SDL_VideoWindow = SDL_CreateWindow(t, window_x, window_y, win_w, win_h,
 			SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_RESIZABLE
 #if defined(ANDROID)

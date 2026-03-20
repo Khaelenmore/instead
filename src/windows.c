@@ -156,17 +156,7 @@ char *appdir( void );
 
 static int mkdir_chk(const char *dirname)
 {
-#ifdef WINRT /* no errno? */
-	DWORD err;
-	if (CreateDirectoryA(dirname, NULL))
-		return 0;
-	err = GetLastError();
-	if (err == ERROR_ALREADY_EXISTS)
-		return 0;
-	return -1;
-#else
 	return mkdir(dirname) && errno != EEXIST;
-#endif
 }
 
 #ifdef _UWP

@@ -11,6 +11,7 @@ Download: https://files.silverwing.one/instead-9x/instead-sdl1-i486.zip
 ## Changes to [mainline INSTEAD](https://github.com/instead-hub/instead)
 
 - SDL1 support is reinstated
+- Windows RT support is completely removed
 - API calls not accessible on older Windows are either removed or made optional
 - Added extra settings that could improve performance at the cost of visual quality
   - Hardware cursor option moved to settings
