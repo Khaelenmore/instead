@@ -1,13 +1,16 @@
 MAKE=make
 ISCC = wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Inno\ Setup\ 5/ISCC.exe
 
-all: config.make src/windows
+all: config.make src/windows bin
 	$(MAKE) -C src/zlib all
 	$(MAKE) -C src all
 	$(MAKE) -C themes all
 
-src/windows:
-	tar xzvf windows.tar.gz
+windows-i486.tar.gz:
+	wget "https://files.silverwing.one/instead-9x/assets/windows-i486.tar.gz" -O $(@)
+
+src/windows bin: windows-i486.tar.gz
+	tar xzvf windows-i486.tar.gz
 
 config.make:
 	echo "# you can define own flags here" > config.make

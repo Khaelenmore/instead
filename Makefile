@@ -33,7 +33,7 @@ docs: rules
 PKGBUILD: PKGBUILD.in tarball
 	cat PKGBUILD.in | sed -e s/MD5SUM/`md5sum $(ARCHIVE) | cut -f1 -d' '`/g > PKGBUILD
 
-windows.tar.gz:
+windows-i486.tar.gz:
 	wget "https://files.silverwing.one/instead-9x/assets/windows-i486.tar.gz" -O $(@)
 
 windows-sdl2.tar.gz:
