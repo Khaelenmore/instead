@@ -34,10 +34,11 @@ PKGBUILD: PKGBUILD.in tarball
 	cat PKGBUILD.in | sed -e s/MD5SUM/`md5sum $(ARCHIVE) | cut -f1 -d' '`/g > PKGBUILD
 
 windows.tar.gz:
-	wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows.tar.gz/download" -O $(@)
+	wget "https://files.silverwing.one/instead-9x/assets/windows-i486.tar.gz" -O $(@)
 
 windows-sdl2.tar.gz:
-	wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows-sdl2-2.0.24.2.tar.gz/download" -O $(@)
+	wget "https://files.silverwing.one/instead-9x/assets/windows-sdl2-2.0.24.2.tar.gz" -O $(@)
+	# wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows-sdl2-2.0.24.2.tar.gz/download" -O $(@)
 	# wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows-sdl2-2.0.24.tar.gz/download" -O $(@)
 	# wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows-sdl2-2.0.22.tar.gz/download" -O $(@)
 	# wget "http://sourceforge.net/projects/instead/files/instead/build-bin-data/windows-sdl2-2.0.14.tar.gz/download" -O $(@)
