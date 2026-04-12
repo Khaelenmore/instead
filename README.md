@@ -43,5 +43,8 @@ To run games you may:
 
 ## Contacts
 
-- Join the irc channel #instead on irc.oftc.net;
+- Contact [Khaelenmore Thaal](inbox@silverwing.one) for any issues with INSTEAD-9x branch first
+
+Upstream INSTEAD contacts:
+- Join the irc channel #instead on spline-online.ru;
 - Check the [AUTHORS](AUTHORS) file.
