@@ -43,7 +43,7 @@ To run games you may:
 
 ## Contacts
 
-- Contact [Khaelenmore Thaal](inbox@silverwing.one) for any issues with INSTEAD-9x branch first
+- Contact [Khaelenmore Thaal](mailto:inbox@silverwing.one) for any issues with INSTEAD-9x branch first
 
 Upstream INSTEAD contacts:
 - Join the irc channel #instead on spline-online.ru;
